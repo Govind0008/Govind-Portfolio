@@ -1,172 +1,138 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useRef } from "react"
 import { motion, useScroll, useTransform } from "framer-motion"
-import { gsap } from "gsap"
-import { ScrollTrigger } from "gsap/ScrollTrigger"
-import { Briefcase, Download, GraduationCap } from "lucide-react"
+import { Cloud, Download, FileSearch, GraduationCap } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import MaskedText from "@/components/ui/masked-text"
+import TiltCard from "@/components/ui/tilt-card"
 
 interface ExperienceProps {
   scrollY: number
 }
 
-const experiences = [
+const milestones = [
   {
-    title: "Software Developer",
-    company: "Xtensible Software Solution",
-    period: "Dec 2023 - Present",
+    title: "Software Engineer",
+    company: "Acumen, Part of Sannam S4 Group",
+    period: "June 2026 - Present",
+    location: "India",
+    tags: ["Cloud Infrastructure", "Backend Optimization"],
+    icon: Cloud,
     description: [
-      "Enhanced backend systems and built automations with ChatGPT + n8n",
-      "Integrated APIs and optimized document/data extraction workflows",
-      "Key product: TitleMine (backend enhancements + AI integrations)",
+      "Building scalable backend systems with Python and AWS",
+      "Leading API development using FastAPI and Flask, with CI/CD pipelines in place",
+      "Integrating AWS services including Lambda and Textract, with full-stack exposure",
     ],
-    icon: Briefcase,
-    color: "bg-blue-500",
   },
   {
-    title: "Education",
-    company: "Computer Science Degree",
-    period: "2019 - 2023",
+    title: "Software Developer",
+    company: "Xtensible Software Technologies Pvt. Ltd.",
+    period: "Jan 2025 - June 2026",
+    location: "Pune District",
+    tags: ["Document Intelligence", "AI Integration"],
+    icon: FileSearch,
     description: [
-      "Focused on web development and software engineering",
-      "Completed projects in AI and machine learning",
-      "Graduated with honors",
+      "Built automations integrating the OpenAI API and n8n into backend workflows",
+      "Integrated third-party APIs and optimized document and data extraction pipelines",
+      "Worked across Python/Flask backend services and PHP/Laravel integrations",
     ],
+  },
+  {
+    title: "Bachelor's Degree, Computer Engineering",
+    company: "Yadavrao Tasgaonkar Institute of Engineering & Technology",
+    period: "Sep 2021 - May 2024",
+    location: "Foundations",
+    tags: ["Software Engineering", "Data Structures"],
     icon: GraduationCap,
-    color: "bg-green-500",
+    description: [
+      "Built a foundation in software engineering, data structures, and web development",
+      "Preceded by a Diploma in Mechanical Engineering, Pimpri Chinchwad Polytechnic (2019 - 2021)",
+    ],
   },
 ]
 
 export default function Experience({ scrollY }: ExperienceProps) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const timelineRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"],
   })
-
-  const y = useTransform(scrollYProgress, [0, 1], [100, -100])
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0])
-
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger)
-
-    // Animate experience items
-    gsap.fromTo(
-      ".experience-item",
-      { x: -100, opacity: 0 },
-      {
-        x: 0,
-        opacity: 1,
-        stagger: 0.2,
-        duration: 0.8,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: ".experience-container",
-          start: "top 80%",
-        },
-      },
-    )
-
-    return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill())
-    }
-  }, [])
+  const opacity = useTransform(scrollYProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0])
 
   return (
-    <section
-      id="experience"
-      ref={containerRef}
-      className="relative min-h-screen flex flex-col items-center justify-center py-20 overflow-hidden"
-    >
-      <motion.div style={{ opacity }} className="container mx-auto px-4 mb-16 text-center">
-        <motion.h2
-          initial={{ y: 50, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="text-4xl md:text-5xl font-bold mb-4"
-        >
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-600">
-            Experience & Resume
-          </span>
-        </motion.h2>
-        <motion.p
-          initial={{ y: 30, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          viewport={{ once: true }}
-          className="text-xl text-gray-300 max-w-2xl mx-auto"
-        >
-          My professional journey and qualifications
-        </motion.p>
+    <section id="experience" ref={containerRef} className="relative py-24 md:py-32 px-6">
+      <motion.div style={{ opacity }} className="container mx-auto max-w-3xl text-center mb-16">
+        <MaskedText className="mb-4">
+          <h2 className="text-3xl md:text-[40px] font-bold text-ink">Engineering Milestones</h2>
+        </MaskedText>
+        <MaskedText delay={0.1}>
+          <p className="text-lg text-subtle">My professional journey and qualifications</p>
+        </MaskedText>
       </motion.div>
 
-      <div className="experience-container w-full max-w-4xl mx-auto px-4 relative">
-        {/* Timeline line */}
-        <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-green-500/80 to-emerald-500/80 rounded-full" />
-
-        {experiences.map((exp, index) => (
+      <div className="container mx-auto max-w-3xl space-y-4">
+        {milestones.map((m, index) => (
           <motion.div
-            key={index}
-            className="experience-item relative flex mb-16 last:mb-0"
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.2 }}
-            viewport={{ once: true }}
+            key={m.title}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
           >
-            <div className={`flex-shrink-0 w-16 h-16 rounded-full ${exp.color} flex items-center justify-center z-10`}>
-              <exp.icon className="w-8 h-8 text-white" />
-            </div>
+            <TiltCard className="rounded-xl border border-white/10 bg-panel/50 p-6 md:p-8 hover:border-white/20 transition-colors">
+              <div className="flex flex-col md:flex-row md:items-start gap-4">
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-accent-blue/15 to-accent-purple/15 flex items-center justify-center flex-shrink-0">
+                  <m.icon className="w-5 h-5 text-accent-blue" />
+                </div>
 
-            <div
-              className="ml-8 bg-black/50 backdrop-blur-md border border-white/10 rounded-xl p-6 flex-grow"
-              style={{
-                transformStyle: "preserve-3d",
-                transform: `perspective(1000px) rotateY(${((scrollY * 0.005) % 5) - 2.5}deg) rotateX(${((scrollY * 0.002) % 3) - 1.5}deg)`,
-              }}
-            >
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                <h3 className="text-2xl font-bold">{exp.title}</h3>
-                <div className="text-gray-400 text-sm mt-1 md:mt-0">{exp.period}</div>
+                <div className="flex-1">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-1 mb-1">
+                    <h3 className="text-xl font-semibold text-ink">{m.title}</h3>
+                    <span className="text-sm text-subtle">{m.period}</span>
+                  </div>
+                  <div className="text-subtle mb-3">
+                    {m.company} · {m.location}
+                  </div>
+
+                  <div className="flex flex-wrap gap-1.5 mb-4">
+                    {m.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="text-xs px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-accent-blue"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  <ul className="space-y-1.5 text-sm text-subtle">
+                    {m.description.map((d) => (
+                      <li key={d} className="flex gap-2">
+                        <span className="text-accent-purple mt-1.5">•</span>
+                        <span>{d}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
-
-              <div className="text-xl text-gray-300 mb-4">{exp.company}</div>
-
-              <ul className="list-disc list-inside text-gray-300 space-y-2">
-                {exp.description.map((item, i) => (
-                  <li key={i}>{item}</li>
-                ))}
-              </ul>
-            </div>
+            </TiltCard>
           </motion.div>
         ))}
       </div>
 
       <motion.div
-        initial={{ y: 50, opacity: 0 }}
+        initial={{ y: 30, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.4 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
         viewport={{ once: true }}
-        className="mt-16 text-center"
+        className="mt-14 text-center"
       >
-        <Button className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-6 h-auto text-lg rounded-xl">
-          <Download className="w-5 h-5 mr-2" />
+        <Button className="bg-ink text-canvas hover:bg-accent-blue px-6 py-6 h-auto text-base rounded-lg">
+          <Download className="w-4 h-4 mr-2" />
           Download Full Resume
         </Button>
       </motion.div>
-
-      <div className="absolute inset-0 pointer-events-none">
-        <div
-          className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-green-500/10 blur-3xl"
-          style={{ transform: `translateY(${scrollY * 0.02}px)` }}
-        />
-        <div
-          className="absolute bottom-1/3 right-1/4 w-96 h-96 rounded-full bg-emerald-500/10 blur-3xl"
-          style={{ transform: `translateY(${scrollY * -0.03}px)` }}
-        />
-      </div>
     </section>
   )
 }

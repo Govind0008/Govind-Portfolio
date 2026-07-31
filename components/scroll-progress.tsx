@@ -39,7 +39,7 @@ export default function ScrollProgress() {
 
   const sections = [
     { id: "about", label: "About" },
-    { id: "how-i-work", label: "Process" },
+    { id: "architecture", label: "Architecture" },
     { id: "projects", label: "Projects" },
     { id: "skills", label: "Skills" },
     { id: "experience", label: "Experience" },
@@ -50,7 +50,7 @@ export default function ScrollProgress() {
     <>
       {/* Progress bar at the top */}
       <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 z-50"
+        className="fixed top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-accent-blue to-accent-purple z-50"
         style={{ scaleX, transformOrigin: "0%" }}
       />
 
@@ -67,10 +67,10 @@ export default function ScrollProgress() {
                 {section.label}
               </span>
               <div
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${
                   activeSection === section.id
-                    ? "bg-gradient-to-r from-blue-500 to-purple-600 scale-125"
-                    : "bg-white/30 scale-100 group-hover:bg-white/50"
+                    ? "bg-gradient-to-r from-accent-blue to-accent-purple scale-125"
+                    : "bg-white/20 scale-100 group-hover:bg-white/40"
                 }`}
               />
             </a>

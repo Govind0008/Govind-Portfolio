@@ -4,17 +4,18 @@ import { useEffect, useRef, useState } from "react"
 import Lenis from "@studio-freight/lenis"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { MotionConfig } from "framer-motion"
 
 import Hero from "@/components/sections/hero"
-import HowIWork from "@/components/sections/how-i-work"
+import About from "@/components/sections/about"
+import Architecture from "@/components/sections/architecture"
 import Projects from "@/components/sections/projects"
 import Skills from "@/components/sections/skills"
+import Philosophy from "@/components/sections/philosophy"
 import Experience from "@/components/sections/experience"
 import Contact from "@/components/sections/contact"
 import Navbar from "@/components/navbar"
-import Cursor from "@/components/cursor"
 import ScrollProgress from "@/components/scroll-progress"
-import FloatingTechIcons from "@/components/floating-tech-icons"
 import { ThemeProvider } from "@/components/theme-provider"
 
 export default function Home() {
@@ -29,10 +30,8 @@ export default function Home() {
     const lenis = new Lenis({
       duration: 1.5,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      direction: "vertical",
-      gestureDirection: "vertical",
-      smooth: true,
-      smoothTouch: false,
+      gestureOrientation: "vertical",
+      smoothWheel: true,
       touchMultiplier: 2,
     })
 
@@ -82,24 +81,23 @@ export default function Home() {
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="govind-theme">
-      <div className="relative bg-black dark:bg-black text-white">
-        <Navbar />
-        <Cursor />
-        <ScrollProgress />
+      <MotionConfig reducedMotion="user">
+        <div className="relative bg-canvas text-ink">
+          <Navbar />
+          <ScrollProgress />
 
-        <div className="fixed inset-0 z-0 pointer-events-none">
-          <FloatingTechIcons scrollY={scrollY} />
+          <div ref={containerRef} className="relative z-10">
+            <Hero scrollY={scrollY} />
+            <About scrollY={scrollY} />
+            <Architecture scrollY={scrollY} />
+            <Projects scrollY={scrollY} />
+            <Skills scrollY={scrollY} />
+            <Philosophy scrollY={scrollY} />
+            <Experience scrollY={scrollY} />
+            <Contact scrollY={scrollY} />
+          </div>
         </div>
-
-        <div ref={containerRef} className="relative z-10">
-          <Hero scrollY={scrollY} />
-          <HowIWork scrollY={scrollY} />
-          <Projects scrollY={scrollY} />
-          <Skills scrollY={scrollY} />
-          <Experience scrollY={scrollY} />
-          <Contact scrollY={scrollY} />
-        </div>
-      </div>
+      </MotionConfig>
     </ThemeProvider>
   )
 }

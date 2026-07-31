@@ -1,28 +1,58 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useRef } from "react"
 import { motion, useScroll, useTransform } from "framer-motion"
-import { gsap } from "gsap"
-import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { BrainCircuit, Cloud, Code2, Database, Layers, Network, Server } from "lucide-react"
+import MaskedText from "@/components/ui/masked-text"
+import TiltCard from "@/components/ui/tilt-card"
 
 interface SkillsProps {
   scrollY: number
 }
 
-const skills = {
-  languages: ["Python", "JavaScript", "PHP", "HTML", "CSS"],
-  frontend: ["React.js", "Tailwind CSS"],
-  backend: ["Flask", "Laravel"],
-  tools: ["Git", "Figma", "OpenAI API", "Google Cloud APIs", "n8n"],
-  other: ["API integration", "Automation workflows", "Resume processing", "PDF data extraction"],
-}
-
-const skillColors = [
-  "bg-gradient-to-br from-blue-500 to-cyan-500",
-  "bg-gradient-to-br from-purple-500 to-pink-500",
-  "bg-gradient-to-br from-amber-500 to-orange-500",
-  "bg-gradient-to-br from-green-500 to-emerald-500",
-  "bg-gradient-to-br from-red-500 to-pink-500",
+const skillGroups = [
+  {
+    title: "Programming",
+    description: "Languages I write production code in day to day.",
+    icon: Code2,
+    items: ["Python", "JavaScript", "PHP", "HTML/CSS"],
+  },
+  {
+    title: "Backend",
+    description: "Designing APIs and services that stay fast under load.",
+    icon: Server,
+    items: ["FastAPI", "Flask", "Laravel", "REST API Design", "Microservices"],
+  },
+  {
+    title: "Cloud",
+    description: "Shipping and running services in production.",
+    icon: Cloud,
+    items: ["AWS (Lambda, Textract)", "Docker", "CI/CD Pipelines", "Google Cloud APIs"],
+  },
+  {
+    title: "AI",
+    description: "Applying LLMs to real workflows, not just chat.",
+    icon: BrainCircuit,
+    items: ["OpenAI API", "LLM Integration", "Semantic Search", "AI Evaluation"],
+  },
+  {
+    title: "Infrastructure",
+    description: "Keeping async work reliable at scale.",
+    icon: Layers,
+    items: ["Background Workers", "Queue Systems", "Distributed Processing", "Caching (Redis)"],
+  },
+  {
+    title: "Databases",
+    description: "Structured, cached, and vector-backed data.",
+    icon: Database,
+    items: ["PostgreSQL", "Redis", "Graph Databases", "PGVector"],
+  },
+  {
+    title: "Architecture",
+    description: "System design for document- and AI-heavy pipelines.",
+    icon: Network,
+    items: ["Document Intelligence", "OCR Systems", "Large-Scale Document Processing", "System Design"],
+  },
 ]
 
 export default function Skills({ scrollY }: SkillsProps) {
@@ -31,129 +61,47 @@ export default function Skills({ scrollY }: SkillsProps) {
     target: containerRef,
     offset: ["start end", "end start"],
   })
-
-  const y = useTransform(scrollYProgress, [0, 1], [100, -100])
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0])
-
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger)
-
-    // Animate skill bubbles
-    gsap.fromTo(
-      ".skill-bubble",
-      {
-        scale: 0.5,
-        opacity: 0,
-        y: gsap.utils.random(50, 150, 10),
-        x: gsap.utils.random(-100, 100, 10),
-      },
-      {
-        scale: 1,
-        opacity: 1,
-        y: 0,
-        x: 0,
-        stagger: 0.03,
-        duration: 0.8,
-        ease: "elastic.out(1, 0.5)",
-        scrollTrigger: {
-          trigger: ".skills-container",
-          start: "top 80%",
-        },
-      },
-    )
-
-    return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill())
-    }
-  }, [])
+  const opacity = useTransform(scrollYProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0])
 
   return (
-    <section
-      id="skills"
-      ref={containerRef}
-      className="relative min-h-screen flex flex-col items-center justify-center py-20 overflow-hidden"
-    >
-      <motion.div style={{ opacity }} className="container mx-auto px-4 mb-16 text-center">
-        <motion.h2
-          initial={{ y: 50, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="text-4xl md:text-5xl font-bold mb-4"
-        >
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
-            Skills & Expertise
-          </span>
-        </motion.h2>
-        <motion.p
-          initial={{ y: 30, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          viewport={{ once: true }}
-          className="text-xl text-gray-300 max-w-2xl mx-auto"
-        >
-          Technologies and tools I work with
-        </motion.p>
+    <section id="skills" ref={containerRef} className="relative py-24 md:py-32 px-6">
+      <motion.div style={{ opacity }} className="container mx-auto max-w-3xl text-center mb-16">
+        <MaskedText className="mb-4">
+          <h2 className="text-3xl md:text-[40px] font-bold text-ink">Skills & Expertise</h2>
+        </MaskedText>
+        <MaskedText delay={0.1}>
+          <p className="text-lg text-subtle">Grouped by where they show up in production systems</p>
+        </MaskedText>
       </motion.div>
 
-      <div className="skills-container w-full max-w-6xl mx-auto px-4">
-        {Object.entries(skills).map(([category, items], categoryIndex) => (
-          <div key={category} className="mb-12">
-            <motion.h3
-              initial={{ x: -50, opacity: 0 }}
-              whileInView={{ x: 0, opacity: 1 }}
-              transition={{ duration: 0.5 }}
-              viewport={{ once: true }}
-              className="text-2xl font-bold mb-6 capitalize"
-            >
-              {category}
-            </motion.h3>
-
-            <div className="flex flex-wrap gap-4">
-              {items.map((skill, index) => {
-                const delay = (categoryIndex * items.length + index) * 0.05
-                const colorIndex = (categoryIndex + index) % skillColors.length
-
-                return (
-                  <motion.div
-                    key={skill}
-                    className={`skill-bubble ${skillColors[colorIndex]} px-4 py-2 rounded-full text-white shadow-lg`}
-                    initial={{ scale: 0.5, opacity: 0 }}
-                    whileInView={{ scale: 1, opacity: 1 }}
-                    transition={{
-                      duration: 0.5,
-                      delay,
-                      type: "spring",
-                      stiffness: 200,
-                    }}
-                    viewport={{ once: true }}
-                    whileHover={{
-                      scale: 1.1,
-                      transition: { duration: 0.2 },
-                    }}
-                    style={{
-                      transformStyle: "preserve-3d",
-                      transform: `perspective(1000px) rotateY(${((scrollY * 0.01 + index * 2) % 10) - 5}deg) rotateX(${((scrollY * 0.005 + index * 1) % 6) - 3}deg)`,
-                    }}
+      <div className="container mx-auto max-w-6xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {skillGroups.map((group, index) => (
+          <motion.div
+            key={group.title}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.5, delay: (index % 3) * 0.08 }}
+          >
+            <TiltCard className="h-full rounded-xl border border-white/10 bg-panel/50 p-6 hover:border-white/20 transition-colors">
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-accent-blue/15 to-accent-purple/15 flex items-center justify-center mb-4">
+                <group.icon className="w-5 h-5 text-accent-blue" />
+              </div>
+              <h3 className="text-lg font-semibold text-ink mb-1">{group.title}</h3>
+              <p className="text-sm text-subtle mb-4">{group.description}</p>
+              <div className="flex flex-wrap gap-1.5">
+                {group.items.map((item) => (
+                  <span
+                    key={item}
+                    className="text-xs px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-subtle"
                   >
-                    {skill}
-                  </motion.div>
-                )
-              })}
-            </div>
-          </div>
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </TiltCard>
+          </motion.div>
         ))}
-      </div>
-
-      <div className="absolute inset-0 pointer-events-none">
-        <div
-          className="absolute top-1/4 right-1/4 w-64 h-64 rounded-full bg-purple-500/10 blur-3xl"
-          style={{ transform: `translateY(${scrollY * 0.02}px)` }}
-        />
-        <div
-          className="absolute bottom-1/3 left-1/4 w-96 h-96 rounded-full bg-pink-500/10 blur-3xl"
-          style={{ transform: `translateY(${scrollY * -0.03}px)` }}
-        />
       </div>
     </section>
   )

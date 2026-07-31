@@ -1,192 +1,180 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
-import { motion, useScroll, useTransform } from "framer-motion"
-import { gsap } from "gsap"
-import { ScrollTrigger } from "gsap/ScrollTrigger"
-import { ExternalLink, Github, Users, Music, Film, FileText } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { useRef, useState } from "react"
+import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion"
+import { ChevronDown, FileSearch, ListTree, Users } from "lucide-react"
+import MaskedText from "@/components/ui/masked-text"
+import TiltCard from "@/components/ui/tilt-card"
 
 interface ProjectsProps {
   scrollY: number
 }
 
-const projects = [
+const caseStudies = [
+  {
+    title: "AI-Powered Resume Automation Pipeline",
+    summary: "An n8n-orchestrated pipeline that scores resumes and extracts structured candidate data with the OpenAI API.",
+    icon: FileSearch,
+    tech: ["OpenAI API", "n8n", "Google Cloud"],
+    problem:
+      "Manual resume screening was slow and inconsistent at volume — reviewers spent hours reading resumes in wildly different formats before a candidate ever reached an interview.",
+    architecture:
+      "n8n orchestrates the pipeline end to end: incoming resumes are parsed, scored, and have structured candidate data extracted via the OpenAI API, then pushed into Google Cloud for storage and interview scheduling.",
+    challenges:
+      "Getting reliable structured extraction out of inconsistent resume formats (PDFs, Word docs, varying layouts) without brittle regex or template matching.",
+    decisions:
+      "Chose workflow orchestration (n8n) over a fully custom backend service, so prompt logic and scoring thresholds could be iterated on quickly without redeploying code.",
+    results: "Cut hiring time by 30%.",
+  },
+  {
+    title: "Backend & Cloud Infrastructure",
+    summary: "FastAPI/Flask services on AWS, with Lambda and Textract handling document-processing workloads.",
+    icon: ListTree,
+    tech: ["Python", "FastAPI", "Flask", "AWS Lambda", "AWS Textract", "CI/CD"],
+    problem:
+      "Backend services needed to run reliably on cloud infrastructure with automated deployment and built-in document-processing capability, rather than manual, one-off deploys.",
+    architecture:
+      "FastAPI and Flask services deployed through CI/CD pipelines; AWS Lambda functions integrate with Textract for document-processing tasks, decoupled from the main API layer.",
+    challenges:
+      "Coordinating serverless functions (Lambda/Textract) with synchronous API services without adding latency to user-facing endpoints.",
+    decisions:
+      "Used managed AWS services (Lambda, Textract) instead of self-hosted OCR, trading some flexibility for lower operational overhead.",
+    results: "Newly deployed and actively expanding in scope.",
+  },
   {
     title: "Employee Task Management System",
-    description: "React + REST API for managing tasks. Improved team productivity by 20%.",
-    image: "/placeholder.svg?height=400&width=600",
-    tech: ["React", "REST API", "Node.js"],
+    summary: "A React + REST API platform for assigning, tracking, and managing team tasks.",
     icon: Users,
-    color: "from-blue-500 to-cyan-500",
+    tech: ["React", "REST API", "Node.js"],
+    problem:
+      "Teams were tracking work in spreadsheets and chat threads, making it hard to see task ownership or status at a glance.",
+    architecture:
+      "A React frontend consumes a REST API backend (Node.js) for task CRUD, assignment, and status tracking.",
+    challenges: "Keeping task state reasonably in sync across concurrent users without over-engineering the sync layer.",
+    decisions:
+      "Chose a straightforward REST + polling model over WebSockets, since the team size didn't justify real-time-sync complexity.",
+    results: "Improved team productivity by 20%.",
   },
-  {
-    title: "Automated Resume Processing System",
-    description:
-      "n8n + OpenAI + Google Cloud. Resume scoring, data extraction, interview scheduling. Cut hiring time by 30%.",
-    image: "/placeholder.svg?height=400&width=600",
-    tech: ["OpenAI", "n8n", "Google Cloud"],
-    icon: FileText,
-    color: "from-green-500 to-emerald-500",
-  },
-  {
-    title: "Netflix Clone",
-    description: "Responsive UI with HTML, CSS, JS. Includes media controls and interactivity.",
-    image: "/placeholder.svg?height=400&width=600",
-    tech: ["HTML", "CSS", "JavaScript"],
-    icon: Film,
-    color: "from-red-500 to-pink-500",
-  },
-  {
-    title: "Spotify Clone",
-    description: "Responsive UI with HTML, CSS, JS. Includes media controls and interactivity.",
-    image: "/placeholder.svg?height=400&width=600",
-    tech: ["HTML", "CSS", "JavaScript"],
-    icon: Music,
-    color: "from-green-500 to-lime-500",
-  },
+]
+
+const otherProjects = [
+  { title: "Netflix Clone", tech: "HTML, CSS, JavaScript", description: "Responsive streaming UI with media controls and interactivity." },
+  { title: "Spotify Clone", tech: "HTML, CSS, JavaScript", description: "Responsive music player UI with media controls and interactivity." },
 ]
 
 export default function Projects({ scrollY }: ProjectsProps) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const [activeProject, setActiveProject] = useState(0)
+  const [expanded, setExpanded] = useState<number | null>(0)
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"],
   })
-
-  const y = useTransform(scrollYProgress, [0, 1], [100, -100])
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0])
-
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger)
-
-    // Animate project cards
-    gsap.fromTo(
-      ".project-card",
-      { y: 100, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        stagger: 0.2,
-        duration: 0.8,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: ".projects-container",
-          start: "top 80%",
-        },
-      },
-    )
-
-    return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill())
-    }
-  }, [])
+  const opacity = useTransform(scrollYProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0])
 
   return (
-    <section
-      id="projects"
-      ref={containerRef}
-      className="relative min-h-screen flex flex-col items-center justify-center py-20 overflow-hidden"
-    >
-      <motion.div style={{ opacity }} className="container mx-auto px-4 mb-16 text-center">
-        <motion.h2
-          initial={{ y: 50, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="text-4xl md:text-5xl font-bold mb-4"
-        >
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-500">
-            Featured Projects
-          </span>
-        </motion.h2>
-        <motion.p
-          initial={{ y: 30, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          viewport={{ once: true }}
-          className="text-xl text-gray-300 max-w-2xl mx-auto"
-        >
-          A showcase of my recent work and technical capabilities
-        </motion.p>
+    <section id="projects" ref={containerRef} className="relative py-24 md:py-32 px-6">
+      <motion.div style={{ opacity }} className="container mx-auto max-w-3xl text-center mb-16">
+        <MaskedText className="mb-4">
+          <h2 className="text-3xl md:text-[40px] font-bold text-ink">Engineering Case Studies</h2>
+        </MaskedText>
+        <MaskedText delay={0.1}>
+          <p className="text-lg text-subtle">Problems, architecture, and decisions behind real work</p>
+        </MaskedText>
       </motion.div>
 
-      <div className="projects-container w-full max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-8">
-        {projects.map((project, index) => (
-          <motion.div
-            key={index}
-            className="project-card group relative bg-black/50 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden"
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
-            viewport={{ once: true }}
-            whileHover={{
-              y: -10,
-              transition: { duration: 0.2 },
-            }}
-            style={{
-              transformStyle: "preserve-3d",
-              transform: `perspective(1000px) rotateY(${((scrollY * 0.01 + index * 5) % 10) - 5}deg) rotateX(${((scrollY * 0.005 + index * 3) % 6) - 3}deg)`,
-            }}
-          >
-            <div
-              className="absolute inset-0 bg-gradient-to-br opacity-30 group-hover:opacity-50 transition-opacity duration-300"
-              style={{
-                backgroundImage: `linear-gradient(to bottom right, ${project.color.split(" ")[0].replace("from-", "")}, ${project.color.split(" ")[1].replace("to-", "")})`,
-              }}
-            />
+      <div className="container mx-auto max-w-4xl space-y-4">
+        {caseStudies.map((project, index) => {
+          const isOpen = expanded === index
+          return (
+            <motion.div
+              key={project.title}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+            >
+              <TiltCard className="rounded-xl border border-white/10 bg-panel/50 overflow-hidden hover:border-white/20 transition-colors">
+                <button
+                  onClick={() => setExpanded(isOpen ? null : index)}
+                  className="w-full text-left p-6 md:p-8 flex items-start gap-4"
+                >
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-accent-blue/15 to-accent-purple/15 flex items-center justify-center flex-shrink-0">
+                    <project.icon className="w-5 h-5 text-accent-blue" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-semibold text-ink mb-1">{project.title}</h3>
+                    <p className="text-subtle mb-3">{project.summary}</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {project.tech.map((t) => (
+                        <span key={t} className="text-xs px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-subtle">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.3 }} className="flex-shrink-0 mt-2">
+                    <ChevronDown className="w-5 h-5 text-subtle" />
+                  </motion.div>
+                </button>
 
-            <div className="relative p-6 flex flex-col h-full">
-              <div className="flex items-center mb-4">
-                <div className={`p-3 rounded-full bg-gradient-to-br ${project.color}`}>
-                  <project.icon className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="text-2xl font-bold ml-4">{project.title}</h3>
-              </div>
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.35, ease: "easeInOut" }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-6 md:px-8 pb-8 pt-2 border-t border-white/10 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <h4 className="text-sm font-semibold text-accent-blue mb-1.5">Problem</h4>
+                          <p className="text-sm text-subtle leading-relaxed">{project.problem}</p>
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-semibold text-accent-blue mb-1.5">Architecture</h4>
+                          <p className="text-sm text-subtle leading-relaxed">{project.architecture}</p>
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-semibold text-accent-blue mb-1.5">Challenges</h4>
+                          <p className="text-sm text-subtle leading-relaxed">{project.challenges}</p>
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-semibold text-accent-blue mb-1.5">Engineering Decisions</h4>
+                          <p className="text-sm text-subtle leading-relaxed">{project.decisions}</p>
+                        </div>
+                        <div className="md:col-span-2">
+                          <h4 className="text-sm font-semibold text-accent-purple mb-1.5">Results</h4>
+                          <p className="text-sm text-ink leading-relaxed">{project.results}</p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </TiltCard>
+            </motion.div>
+          )
+        })}
+      </div>
 
-              <p className="text-gray-300 mb-6">{project.description}</p>
-
-              <div className="flex flex-wrap gap-2 mb-6 mt-auto">
-                {project.tech.map((tech, i) => (
-                  <span key={i} className="text-xs px-3 py-1 rounded-full bg-white/10 border border-white/5">
-                    {tech}
-                  </span>
-                ))}
-              </div>
-
-              <div className="flex gap-3">
-                <Button variant="outline" size="sm" className="group-hover:bg-white/10 transition-colors">
-                  <Github className="w-4 h-4 mr-2" />
-                  Code
-                </Button>
-                <Button variant="outline" size="sm" className="group-hover:bg-white/10 transition-colors">
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  Demo
-                </Button>
-              </div>
-
-              <div
-                className="absolute top-0 right-0 w-32 h-32 -mt-10 -mr-10 bg-gradient-to-br opacity-30 rounded-full blur-3xl group-hover:opacity-50 transition-opacity duration-300"
-                style={{
-                  backgroundImage: `linear-gradient(to bottom right, ${project.color.split(" ")[0].replace("from-", "")}, ${project.color.split(" ")[1].replace("to-", "")})`,
-                }}
-              />
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="container mx-auto max-w-4xl mt-14"
+      >
+        <h3 className="text-sm font-medium text-subtle uppercase tracking-wide mb-4 text-center">Other Projects</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {otherProjects.map((p) => (
+            <div key={p.title} className="rounded-xl border border-white/10 bg-panel/30 p-5">
+              <h4 className="font-semibold text-ink mb-1">{p.title}</h4>
+              <p className="text-sm text-subtle mb-2">{p.description}</p>
+              <p className="text-xs text-subtle/70">{p.tech}</p>
             </div>
-          </motion.div>
-        ))}
-      </div>
-
-      <div className="absolute inset-0 pointer-events-none">
-        <div
-          className="absolute top-1/4 left-1/3 w-64 h-64 rounded-full bg-blue-500/10 blur-3xl"
-          style={{ transform: `translateY(${scrollY * 0.03}px)` }}
-        />
-        <div
-          className="absolute bottom-1/3 right-1/4 w-96 h-96 rounded-full bg-cyan-500/10 blur-3xl"
-          style={{ transform: `translateY(${scrollY * -0.02}px)` }}
-        />
-      </div>
+          ))}
+        </div>
+      </motion.div>
     </section>
   )
 }

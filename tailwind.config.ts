@@ -19,7 +19,17 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["var(--font-inter)", "Inter", "sans-serif"],
+      },
       colors: {
+        canvas: "#09090B",
+        surface: "#111827",
+        panel: "#18181B",
+        "accent-blue": "#38BDF8",
+        "accent-purple": "#8B5CF6",
+        ink: "#F8FAFC",
+        subtle: "#94A3B8",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

@@ -52,18 +52,49 @@ html {
 }
 
 body {
-  background-color: black;
-  color: white;
+  background-color: #09090b;
+  color: #f8fafc;
 }
 
 .dark body {
-  background-color: black;
-  color: white;
+  background-color: #09090b;
+  color: #f8fafc;
 }
 
 .light body {
-  background-color: white;
-  color: black;
+  background-color: #09090b;
+  color: #f8fafc;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Spotlight hover effect used by case-study and milestone cards */
+.spotlight-card {
+  position: relative;
+}
+
+.spotlight-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(400px circle at var(--x, 50%) var(--y, 50%), rgba(56, 189, 248, 0.08), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.spotlight-card:hover::before {
+  opacity: 1;
 }
 
 ::-webkit-scrollbar {
