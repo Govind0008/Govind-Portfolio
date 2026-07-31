@@ -2,7 +2,7 @@
 
 import { useRef } from "react"
 import { motion, useScroll, useTransform } from "framer-motion"
-import { Activity, Gauge, GitBranch, ShieldCheck, TrendingUp } from "lucide-react"
+import { Activity, Gauge, GitBranch, Layers, ShieldCheck } from "lucide-react"
 import MaskedText from "@/components/ui/masked-text"
 
 interface PhilosophyProps {
@@ -11,29 +11,29 @@ interface PhilosophyProps {
 
 const principles = [
   {
-    title: "Reliability",
-    description: "Systems fail. I design for graceful degradation, not just the happy path.",
-    icon: ShieldCheck,
-  },
-  {
-    title: "Maintainability",
-    description: "Code is read far more than it's written. I optimize for the next engineer.",
+    title: "Build for maintainability.",
+    description: "Code is read far more than it's written — I optimize for the next engineer, including future me.",
     icon: GitBranch,
   },
   {
-    title: "Observability",
+    title: "Performance is a feature.",
+    description: "Latency and cost aren't afterthoughts. I profile before I optimize.",
+    icon: Gauge,
+  },
+  {
+    title: "Simple architectures scale.",
+    description: "Complexity is a cost I spend deliberately, not by accident.",
+    icon: Layers,
+  },
+  {
+    title: "Observability is non-negotiable.",
     description: "If I can't measure it in production, I can't trust it in production.",
     icon: Activity,
   },
   {
-    title: "Performance",
-    description: "Latency and cost are features. I profile before I optimize.",
-    icon: Gauge,
-  },
-  {
-    title: "Scalability",
-    description: "I design for the load I have, with a clear path to the load I might get.",
-    icon: TrendingUp,
+    title: "Reliability comes before complexity.",
+    description: "Systems fail. I design for graceful degradation before I reach for the interesting solution.",
+    icon: ShieldCheck,
   },
 ]
 

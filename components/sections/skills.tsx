@@ -2,7 +2,7 @@
 
 import { useRef } from "react"
 import { motion, useScroll, useTransform } from "framer-motion"
-import { BrainCircuit, Cloud, Code2, Database, Layers, Network, Server } from "lucide-react"
+import { BrainCircuit, Cloud, Code2, Database, Layers, Monitor, Network, Server } from "lucide-react"
 import MaskedText from "@/components/ui/masked-text"
 import TiltCard from "@/components/ui/tilt-card"
 
@@ -22,6 +22,12 @@ const skillGroups = [
     description: "Designing APIs and services that stay fast under load.",
     icon: Server,
     items: ["FastAPI", "Flask", "Laravel", "REST API Design", "Microservices"],
+  },
+  {
+    title: "Frontend",
+    description: "Building the interfaces that sit on top of the backend.",
+    icon: Monitor,
+    items: ["React", "Next.js", "Tailwind CSS"],
   },
   {
     title: "Cloud",

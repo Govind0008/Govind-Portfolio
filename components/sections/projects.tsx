@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react"
 import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion"
-import { ChevronDown, FileSearch, ListTree, Users } from "lucide-react"
+import { ChevronDown, Cloud, ExternalLink, FileSearch, GraduationCap, HeartPulse } from "lucide-react"
 import MaskedText from "@/components/ui/masked-text"
 import TiltCard from "@/components/ui/tilt-card"
 
@@ -10,54 +10,103 @@ interface ProjectsProps {
   scrollY: number
 }
 
-const caseStudies = [
+interface CaseStudy {
+  title: string
+  badge?: string
+  summary: string
+  icon: typeof FileSearch
+  tech: string[]
+  liveUrl?: string
+  problem: string
+  solution: string
+  architecture?: string
+  challenges?: string
+  decisions?: string
+  impact: string
+  lessons?: string
+}
+
+const caseStudies: CaseStudy[] = [
   {
-    title: "AI-Powered Resume Automation Pipeline",
-    summary: "An n8n-orchestrated pipeline that scores resumes and extracts structured candidate data with the OpenAI API.",
+    title: "Enterprise AI Document Intelligence Platform",
+    badge: "Client Project",
+    summary: "An enterprise platform for processing complex document workflows with OCR, semantic retrieval, and AI-powered extraction.",
     icon: FileSearch,
-    tech: ["OpenAI API", "n8n", "Google Cloud"],
+    tech: ["OCR", "Semantic Search", "Vector Embeddings", "Redis", "PostgreSQL", "AWS", "Docker"],
     problem:
-      "Manual resume screening was slow and inconsistent at volume — reviewers spent hours reading resumes in wildly different formats before a candidate ever reached an interview.",
+      "A client needed to process high volumes of complex, unstructured documents accurately — replacing manual review with an automated, auditable pipeline.",
+    solution:
+      "Designed a document intelligence platform combining OCR, AI-assisted extraction, and semantic search to structure and retrieve information from unstructured documents at scale.",
     architecture:
-      "n8n orchestrates the pipeline end to end: incoming resumes are parsed, scored, and have structured candidate data extracted via the OpenAI API, then pushed into Google Cloud for storage and interview scheduling.",
+      "Documents flow through OCR pipelines into background workers for AI-assisted extraction; results are cached in Redis and persisted in PostgreSQL, with semantic search over vector embeddings for retrieval — deployed on AWS via Docker.",
     challenges:
-      "Getting reliable structured extraction out of inconsistent resume formats (PDFs, Word docs, varying layouts) without brittle regex or template matching.",
+      "Keeping extraction accurate across inconsistent document formats and scan quality, while keeping the system responsive under background-processing load.",
     decisions:
-      "Chose workflow orchestration (n8n) over a fully custom backend service, so prompt logic and scoring thresholds could be iterated on quickly without redeploying code.",
-    results: "Cut hiring time by 30%.",
+      "Decoupled slow OCR/AI steps into background workers with Redis caching, rather than processing documents synchronously on the request path.",
+    impact: "Replaced manual document review with an automated pipeline for the client's document-heavy workflows.",
+    lessons:
+      "Working under a confidentiality constraint reinforced how much reliability and observability matter once AI moves from a demo into an operational pipeline.",
   },
   {
-    title: "Backend & Cloud Infrastructure",
-    summary: "FastAPI/Flask services on AWS, with Lambda and Textract handling document-processing workloads.",
-    icon: ListTree,
-    tech: ["Python", "FastAPI", "Flask", "AWS Lambda", "AWS Textract", "CI/CD"],
+    title: "Enterprise AI Learning Platform",
+    badge: "Client Project",
+    summary: "Backend systems and AI-powered workflows for an educational platform integrating LLM capabilities into learning experiences.",
+    icon: GraduationCap,
+    tech: ["Python", "AI APIs", "Prompt Engineering", "Document Processing", "REST APIs"],
     problem:
-      "Backend services needed to run reliably on cloud infrastructure with automated deployment and built-in document-processing capability, rather than manual, one-off deploys.",
+      "An educational platform needed LLM-powered capabilities woven into its learning workflows without compromising backend performance or reliability.",
+    solution:
+      "Built backend services and prompt-engineered AI workflows that layered LLM capabilities into the platform's learning experience.",
     architecture:
-      "FastAPI and Flask services deployed through CI/CD pipelines; AWS Lambda functions integrate with Textract for document-processing tasks, decoupled from the main API layer.",
+      "REST APIs handle platform requests and delegate AI-specific work to dedicated backend services calling LLM APIs, with document-processing pipelines supporting content-heavy workflows.",
     challenges:
-      "Coordinating serverless functions (Lambda/Textract) with synchronous API services without adding latency to user-facing endpoints.",
+      "Balancing LLM response quality against latency and cost, and keeping prompt behavior consistent across varied learning content.",
     decisions:
-      "Used managed AWS services (Lambda, Textract) instead of self-hosted OCR, trading some flexibility for lower operational overhead.",
-    results: "Newly deployed and actively expanding in scope.",
+      "Invested in prompt engineering and backend performance optimization rather than treating the LLM integration as a bolt-on feature.",
+    impact: "Delivered production backend services and AI workflows supporting the platform's learning experience.",
   },
   {
-    title: "Employee Task Management System",
-    summary: "A React + REST API platform for assigning, tracking, and managing team tasks.",
-    icon: Users,
-    tech: ["React", "REST API", "Node.js"],
+    title: "Commercial Fitness Platform",
+    summary: "Contributed to a modern, responsive fitness platform — membership plans, a BMI calculator, and health assessments.",
+    icon: HeartPulse,
+    tech: ["Responsive UI", "Mobile-First", "Performance Optimization", "Interactive UX"],
+    liveUrl: "https://www.crunnchhfitness.com/",
     problem:
-      "Teams were tracking work in spreadsheets and chat threads, making it hard to see task ownership or status at a glance.",
+      "The client needed a modern, mobile-first web presence that could turn visitors into members through clear plans and interactive tools.",
+    solution:
+      "Contributed to building a responsive fitness platform featuring membership plans, a BMI calculator, health assessments, and modern landing pages.",
+    impact: "A live commercial site — see it in production below.",
+  },
+  {
+    title: "Backend Infrastructure & Cloud Engineering",
+    summary: "Production backend systems on AWS — API design, authentication, deployment, and observability.",
+    icon: Cloud,
+    tech: ["AWS (Lambda, Textract)", "Docker", "CI/CD", "API Design", "Authentication", "Observability"],
+    problem:
+      "Backend services needed to run reliably in the cloud with proper deployment automation, not manual, one-off releases.",
+    solution:
+      "Built and deployed FastAPI/Flask services on AWS with CI/CD pipelines, integrating managed services like Lambda and Textract for document-processing workloads.",
     architecture:
-      "A React frontend consumes a REST API backend (Node.js) for task CRUD, assignment, and status tracking.",
-    challenges: "Keeping task state reasonably in sync across concurrent users without over-engineering the sync layer.",
+      "API services ship through CI/CD pipelines; serverless functions (Lambda, Textract) handle document-processing tasks decoupled from the synchronous API layer.",
+    challenges:
+      "Coordinating serverless functions with synchronous API services without adding latency to user-facing endpoints.",
     decisions:
-      "Chose a straightforward REST + polling model over WebSockets, since the team size didn't justify real-time-sync complexity.",
-    results: "Improved team productivity by 20%.",
+      "Prioritized managed AWS services over self-hosted infrastructure to cut operational overhead, and treated deployment automation and observability as first-class concerns.",
+    impact: "Newly deployed and actively expanding in scope.",
   },
 ]
 
 const otherProjects = [
+  {
+    title: "AI-Powered Resume Automation Pipeline",
+    tech: "OpenAI API, n8n, Google Cloud",
+    description: "An n8n-orchestrated pipeline that scores resumes and extracts structured candidate data. Cut hiring time by 30%.",
+  },
+  {
+    title: "Employee Task Management System",
+    tech: "React, REST API, Node.js",
+    description: "A platform for assigning, tracking, and managing team tasks. Improved team productivity by 20%.",
+  },
   { title: "Netflix Clone", tech: "HTML, CSS, JavaScript", description: "Responsive streaming UI with media controls and interactivity." },
   { title: "Spotify Clone", tech: "HTML, CSS, JavaScript", description: "Responsive music player UI with media controls and interactivity." },
 ]
@@ -85,6 +134,14 @@ export default function Projects({ scrollY }: ProjectsProps) {
       <div className="container mx-auto max-w-4xl space-y-4">
         {caseStudies.map((project, index) => {
           const isOpen = expanded === index
+          const details: { label: string; value: string }[] = [
+            { label: "Problem", value: project.problem },
+            { label: "Solution", value: project.solution },
+            ...(project.architecture ? [{ label: "Architecture", value: project.architecture }] : []),
+            ...(project.challenges ? [{ label: "Challenges", value: project.challenges }] : []),
+            ...(project.decisions ? [{ label: "Engineering Decisions", value: project.decisions }] : []),
+          ]
+
           return (
             <motion.div
               key={project.title}
@@ -102,7 +159,14 @@ export default function Projects({ scrollY }: ProjectsProps) {
                     <project.icon className="w-5 h-5 text-accent-blue" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-xl font-semibold text-ink mb-1">{project.title}</h3>
+                    <div className="flex items-center gap-2 flex-wrap mb-1">
+                      <h3 className="text-xl font-semibold text-ink">{project.title}</h3>
+                      {project.badge && (
+                        <span className="text-[11px] px-2 py-0.5 rounded-full bg-accent-purple/15 text-accent-purple border border-accent-purple/20">
+                          {project.badge}
+                        </span>
+                      )}
+                    </div>
                     <p className="text-subtle mb-3">{project.summary}</p>
                     <div className="flex flex-wrap gap-1.5">
                       {project.tech.map((t) => (
@@ -127,26 +191,38 @@ export default function Projects({ scrollY }: ProjectsProps) {
                       className="overflow-hidden"
                     >
                       <div className="px-6 md:px-8 pb-8 pt-2 border-t border-white/10 grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                          <h4 className="text-sm font-semibold text-accent-blue mb-1.5">Problem</h4>
-                          <p className="text-sm text-subtle leading-relaxed">{project.problem}</p>
-                        </div>
-                        <div>
-                          <h4 className="text-sm font-semibold text-accent-blue mb-1.5">Architecture</h4>
-                          <p className="text-sm text-subtle leading-relaxed">{project.architecture}</p>
-                        </div>
-                        <div>
-                          <h4 className="text-sm font-semibold text-accent-blue mb-1.5">Challenges</h4>
-                          <p className="text-sm text-subtle leading-relaxed">{project.challenges}</p>
-                        </div>
-                        <div>
-                          <h4 className="text-sm font-semibold text-accent-blue mb-1.5">Engineering Decisions</h4>
-                          <p className="text-sm text-subtle leading-relaxed">{project.decisions}</p>
-                        </div>
+                        {details.map((d) => (
+                          <div key={d.label}>
+                            <h4 className="text-sm font-semibold text-accent-blue mb-1.5">{d.label}</h4>
+                            <p className="text-sm text-subtle leading-relaxed">{d.value}</p>
+                          </div>
+                        ))}
+
                         <div className="md:col-span-2">
-                          <h4 className="text-sm font-semibold text-accent-purple mb-1.5">Results</h4>
-                          <p className="text-sm text-ink leading-relaxed">{project.results}</p>
+                          <h4 className="text-sm font-semibold text-accent-purple mb-1.5">Business Impact</h4>
+                          <p className="text-sm text-ink leading-relaxed">{project.impact}</p>
                         </div>
+
+                        {project.lessons && (
+                          <div className="md:col-span-2">
+                            <h4 className="text-sm font-semibold text-accent-purple mb-1.5">Lessons Learned</h4>
+                            <p className="text-sm text-subtle leading-relaxed">{project.lessons}</p>
+                          </div>
+                        )}
+
+                        {project.liveUrl && (
+                          <div className="md:col-span-2">
+                            <a
+                              href={project.liveUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 text-sm text-accent-blue hover:underline"
+                            >
+                              View Live Site
+                              <ExternalLink className="w-3.5 h-3.5" />
+                            </a>
+                          </div>
+                        )}
                       </div>
                     </motion.div>
                   )}
