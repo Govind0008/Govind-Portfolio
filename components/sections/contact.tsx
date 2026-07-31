@@ -37,10 +37,10 @@ export default function Contact({ scrollY }: ContactProps) {
     <section id="contact" ref={containerRef} className="relative py-24 md:py-32 px-6">
       <motion.div style={{ opacity }} className="container mx-auto max-w-3xl text-center mb-16">
         <MaskedText className="mb-4">
-          <h2 className="text-3xl md:text-[40px] font-bold text-ink">Get In Touch</h2>
+          <h2 className="text-3xl md:text-[40px] font-bold text-ink">Let's Build Something Great Together</h2>
         </MaskedText>
         <MaskedText delay={0.1}>
-          <p className="text-lg text-subtle">Have a project in mind? Let's work together.</p>
+          <p className="text-lg text-subtle">Open to new roles and interesting backend/AI infrastructure problems.</p>
         </MaskedText>
       </motion.div>
 
@@ -78,7 +78,7 @@ export default function Contact({ scrollY }: ContactProps) {
             </div>
             <div>
               <h3 className="font-semibold text-ink mb-0.5">Location</h3>
-              <p className="text-subtle">Mumbai Metropolitan Region, India</p>
+              <p className="text-subtle">Pune, India</p>
             </div>
           </div>
 

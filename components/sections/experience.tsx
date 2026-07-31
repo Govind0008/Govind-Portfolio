@@ -2,8 +2,7 @@
 
 import { useRef } from "react"
 import { motion, useScroll, useTransform } from "framer-motion"
-import { Cloud, Download, FileSearch, GraduationCap } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Cloud, FileSearch, GraduationCap } from "lucide-react"
 import MaskedText from "@/components/ui/masked-text"
 import TiltCard from "@/components/ui/tilt-card"
 
@@ -20,9 +19,9 @@ const milestones = [
     tags: ["Cloud Infrastructure", "Backend Optimization"],
     icon: Cloud,
     description: [
-      "Building scalable backend systems with Python and AWS",
-      "Leading API development using FastAPI and Flask, with CI/CD pipelines in place",
-      "Integrating AWS services including Lambda and Textract, with full-stack exposure",
+      "Architecting scalable backend services with Python and AWS",
+      "Leading API development in FastAPI and Flask, with CI/CD pipelines in production",
+      "Integrating AWS Lambda and Textract for automated document processing",
     ],
   },
   {
@@ -33,9 +32,9 @@ const milestones = [
     tags: ["Document Intelligence", "AI Integration"],
     icon: FileSearch,
     description: [
-      "Built automations integrating the OpenAI API and n8n into backend workflows",
-      "Integrated third-party APIs and optimized document and data extraction pipelines",
-      "Worked across Python/Flask backend services and PHP/Laravel integrations",
+      "Built backend automations integrating the OpenAI API and n8n into production workflows",
+      "Engineered document and data-extraction pipelines across third-party APIs",
+      "Delivered backend services spanning Python/Flask and PHP/Laravel",
     ],
   },
   {
@@ -120,19 +119,6 @@ export default function Experience({ scrollY }: ExperienceProps) {
           </motion.div>
         ))}
       </div>
-
-      <motion.div
-        initial={{ y: 30, opacity: 0 }}
-        whileInView={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-        viewport={{ once: true }}
-        className="mt-14 text-center"
-      >
-        <Button className="bg-ink text-canvas hover:bg-accent-blue px-6 py-6 h-auto text-base rounded-lg">
-          <Download className="w-4 h-4 mr-2" />
-          Download Full Resume
-        </Button>
-      </motion.div>
     </section>
   )
 }
